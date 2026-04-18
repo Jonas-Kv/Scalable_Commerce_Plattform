@@ -1,0 +1,120 @@
+version: '3.8'
+
+services:
+  # API Gateway (Einzig offener Port)
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    networks:
+      - ecommerce-net
+
+  # Auth Service
+  db-auth:
+    image: postgres:15
+    env_file: ./auth-service/auth.env
+    networks:
+      - ecommerce-net
+
+  auth-service:
+    build: ./auth-service
+    depends_on:
+      - db-auth
+    env_file: ./auth-service/auth.env
+    networks:
+      - ecommerce-net
+
+  # User Service
+  db-user:
+    image: postgres:15
+    env_file: ./user-service/user.env
+    networks:
+      - ecommerce-net
+
+  user-service:
+    build: ./user-service
+    depends_on:
+      - db-user
+    env_file: ./user-service/user.env
+    networks:
+      - ecommerce-net
+
+  # Product Service
+  db-product:
+    image: postgres:15
+    env_file: ./product-service/product.env
+    networks:
+      - ecommerce-net
+
+  product-service:
+    build: ./product-service
+    depends_on:
+      - db-product
+    env_file: ./product-service/product.env
+    networks:
+      - ecommerce-net
+
+  # Order Service
+  db-order:
+    image: postgres:15
+    env_file: ./order-service/order.env
+    networks:
+      - ecommerce-net
+
+  order-service:
+    build: ./order-service
+    depends_on:
+      - db-order
+    env_file: ./order-service/order.env
+    networks:
+      - ecommerce-net
+
+  # Payment Service
+  db-payment:
+    image: postgres:15
+    env_file: ./payment-service/payment.env
+    networks:
+      - ecommerce-net
+
+  payment-service:
+    build: ./payment-service
+    depends_on:
+      - db-payment
+    env_file: ./payment-service/payment.env
+    networks:
+      - ecommerce-net
+
+  # Chat Service
+  db-chat:
+    image: postgres:15
+    env_file: ./chat-service/chat.env
+    networks:
+      - ecommerce-net
+
+  chat-service:
+    build: ./chat-service
+    depends_on:
+      - db-chat
+    env_file: ./chat-service/chat.env
+    networks:
+      - ecommerce-net
+
+  # Notification Service
+  db-notification:
+    image: postgres:15
+    env_file: ./notification-service/notification.env
+    networks:
+      - ecommerce-net
+
+  notification-service:
+    build: ./notification-service
+    depends_on:
+      - db-notification
+    env_file: ./notification-service/notification.env
+    networks:
+      - ecommerce-net
+
+networks:
+  ecommerce-net:
+    driver: bridge

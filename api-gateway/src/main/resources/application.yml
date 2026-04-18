@@ -1,0 +1,44 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      routes:
+        - id: auth-service
+          uri: http://auth-service:8080
+          predicates:
+            - Path=/auth/**
+
+        - id: user-service
+          uri: http://user-service:8080
+          predicates:
+            - Path=/users/**
+
+        - id: product-service
+          uri: http://product-service:8080
+          predicates:
+            - Path=/products/**
+
+        - id: order-service
+          uri: http://order-service:8080
+          predicates:
+            - Path=/orders/**
+
+        - id: payment-service
+          uri: http://payment-service:8080
+          predicates:
+            - Path=/payments/**
+
+        - id: chat-service
+          uri: http://chat-service:8080
+          predicates:
+            - Path=/chat/**
+
+        - id: notification-service
+          uri: http://notification-service:8080
+          predicates:
+            - Path=/notifications/**
