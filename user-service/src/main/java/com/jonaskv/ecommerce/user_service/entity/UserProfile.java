@@ -1,4 +1,4 @@
-package com.jonaskv.ecommerce.user_service;
+package com.jonaskv.ecommerce.user_service.entity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,21 +21,21 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table (name = "user_profiles")
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class UserProfile {
 
   @Id //TODO: machen das Id von auth generiert wird
   private long id;
 
-  @Column (nullable = false)
+  @Column
   private String firstName;
 
-  @Column (nullable = false)
+  @Column
   private String lastName;
 
-  @Column ( unique = true )
+  @Column
   private String phoneNumber;
 
   private String profilImageUrl;

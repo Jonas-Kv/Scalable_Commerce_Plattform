@@ -1,4 +1,4 @@
-package com.jonaskv.ecommerce.user_service;
+package com.jonaskv.ecommerce.user_service.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
