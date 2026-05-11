@@ -19,7 +19,7 @@ The finished system consists of multiple microservices:
 * **Order Service** – order processing
 * **Payment Service** – payment handling
 * **Notification Service** – event-based communication (e.g. emails)
-
+* **User Service** - profile information management
 ---
 
 ##  Security
