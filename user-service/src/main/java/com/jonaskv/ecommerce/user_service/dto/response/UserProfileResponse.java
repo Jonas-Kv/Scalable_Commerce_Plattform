@@ -9,27 +9,21 @@ import com.jonaskv.ecommerce.user_service.entity.Address;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class UserProfileResponse {
   
-  public String firstName;
-
-  public String lastName;
-
-  public String phoneNumber;
-
+  private String firstName;
+  private String lastName;
+  private String phoneNumber;
   private String profilImageUrl;
-
-  public LocalDateTime createdAt;
-
-  public LocalDateTime updatedAt;
-
-  public List <Address> addressesList;
+  private LocalDateTime createdAt;
+  private LocalDateTime updatedAt;
+  private List <AddressResponse> addressesList;
 
 
 }

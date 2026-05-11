@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping ("/api/user-profile")
 @RequiredArgsConstructor
 public class UserProfileController {
-  
-  //post ->erstellt ein leeres Profil, nimmt die id von auth entgegen
 
   private final UserProfileService userProfileService;
 
@@ -36,4 +34,6 @@ public class UserProfileController {
     @PathVariable Long userId) {
     return ResponseEntity.ok(userProfileService.getProfile(userId));
   }
+
+  
 }
