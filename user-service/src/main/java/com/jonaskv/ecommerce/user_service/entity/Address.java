@@ -39,13 +39,14 @@ public class Address{
   private String street;
 
   @Column (nullable = false)
+  private Boolean isDefault;
+
+  @Column (nullable = false)
   @Builder.Default
-  private String country = "Germamy";
+  private String country = "Germany";
 
   public void assingToUser( UserProfile user) {
     this.user = user;
   }
-
-
 
 }
