@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 
 import java.util.List;
 
-import com.jonaskv.ecommerce.user_service.entity.Address;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.jonaskv.ecommerce.user_service.dto.request.UserProfileRequest;
 import com.jonaskv.ecommerce.user_service.dto.response.AddressResponse;
 import com.jonaskv.ecommerce.user_service.dto.response.UserProfileResponse;
 import com.jonaskv.ecommerce.user_service.entity.UserProfile;
@@ -18,16 +19,30 @@ public class UserProfileService {
   private final UserProfileRepository userProfileRepository;
 
   public void createProfile(Long id) {
-    UserProfile userProfile =  UserProfile.builder()
-          .id(id)
-          .build();
-    userProfileRepository.save(userProfile);   
+      UserProfile userProfile =  UserProfile.builder()
+            .id(id)
+            .build();
+      userProfileRepository.save(userProfile);   
   }
 
-  public UserProfileResponse getProfile (Long id) {
+  public UserProfileResponse getProfile(Long id) {
+      UserProfile user= userProfileRepository.findById(id).orElseThrow(() -> new IllegalStateException(""));
+      return userProfileResponseBuilder(user);
+  }
 
-    UserProfile user= userProfileRepository.findById(id).orElseThrow(() -> new IllegalStateException(""));
-    List <AddressResponse> addressResponseList= user.getAddresses()
+  public UserProfileResponse updateProfile(Long id, UserProfileRequest request) {
+      UserProfile user = userProfileRepository.findById(id).orElseThrow(() -> new IllegalStateException());
+      user.updateProfil(
+            request.getFirstName(),
+            request.getLastName(),
+            request.getPhoneNumber()
+      );
+      userProfileRepository.save(user);
+      return userProfileResponseBuilder(user);
+  }
+  
+  private UserProfileResponse userProfileResponseBuilder(UserProfile user) {
+      List <AddressResponse> addressResponseList= user.getAddresses()
           .stream()
           .map(address -> AddressResponse.builder()
           .id(address.getId())
@@ -37,8 +52,8 @@ public class UserProfileService {
           .country(address.getCountry())
           .isDefault(address.getIsDefault())
           .build()).toList();
-
-    return UserProfileResponse.builder()
+      
+      return UserProfileResponse.builder()
           .firstName(user.getFirstName())
           .lastName(user.getLastName())
           .phoneNumber(user.getPhoneNumber())
@@ -47,5 +62,7 @@ public class UserProfileService {
           .createdAt(user.getCreatedAt())
           .updatedAt(user.getUpdatedAt())
           .build();
-    }
+  }
+
+
 }

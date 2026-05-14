@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jonaskv.ecommerce.user_service.dto.request.CreateProfileRequest;
+import com.jonaskv.ecommerce.user_service.dto.request.UserProfileRequest;
 import com.jonaskv.ecommerce.user_service.dto.response.UserProfileResponse;
 import com.jonaskv.ecommerce.user_service.service.UserProfileService;
 
@@ -12,9 +13,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @RestController
 @RequestMapping ("/api/user-profile")
@@ -23,17 +25,31 @@ public class UserProfileController {
 
   private final UserProfileService userProfileService;
 
+  //Leeres Objekt erstellen
   @PostMapping
-  public ResponseEntity<Void> createProfile(@RequestBody CreateProfileRequest request) {
+  public ResponseEntity<Void> createProfile(
+        @RequestBody CreateProfileRequest request
+  ) {
     userProfileService.createProfile(request.getUserId());
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
+  //UserProfil zurückgeben
   @GetMapping("/me/{userId}")
   public ResponseEntity<UserProfileResponse> getMyProfile(
-    @PathVariable Long userId) {
+        @RequestHeader("X-User-Id") Long userId
+  ){
     return ResponseEntity.ok(userProfileService.getProfile(userId));
   }
 
+  //UserProfil updaten
+  @PutMapping ("/me")
+  public ResponseEntity<UserProfileResponse> updateProfile(
+        @RequestHeader("X-User-Id") Long userId,
+        @RequestBody UserProfileRequest userProfileRequest
+  ){
+    return ResponseEntity.ok(userProfileService.updateProfile(userId, userProfileRequest));
+  }
+  
   
 }
