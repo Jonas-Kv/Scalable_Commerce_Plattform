@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 public class UserProfile {
 
   @Id //TODO: machen das Id von auth generiert wird
-  private long id;
+  private Long id;
 
   @Column
   private String firstName;
@@ -72,6 +72,17 @@ public class UserProfile {
   public void removeAddress(Address address) {
     addresses.remove(address);
     address.assingToUser(null);
+  }
+
+  public void setAddressToDefault(Address addressToDefault){
+    for(Address address: addresses) {
+      if(address.equals(addressToDefault)) {
+        address.setIsDefault(true);
+      }
+      else {
+        address.setIsDefault(false);
+      }
+    }
   }
 
 }

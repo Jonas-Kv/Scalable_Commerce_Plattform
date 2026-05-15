@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table (name = "addresses")
@@ -39,14 +40,14 @@ public class Address{
   private String street;
 
   @Column (nullable = false)
+  @Setter
   private Boolean isDefault;
 
   @Column (nullable = false)
   @Builder.Default
   private String country = "Germany";
 
-  public void assingToUser( UserProfile user) {
+  public void assingToUser(UserProfile user) {
     this.user = user;
   }
-
 }

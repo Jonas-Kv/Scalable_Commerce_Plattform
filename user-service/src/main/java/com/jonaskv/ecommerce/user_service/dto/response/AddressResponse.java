@@ -6,9 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class AddressResponse {
   
   private Long id;
@@ -16,6 +16,6 @@ public class AddressResponse {
   private String city;
   private String postalCode;
   @Builder.Default
-  private String country = "Germamy";
+  private String country = "Germany";
   private Boolean isDefault;
 }
