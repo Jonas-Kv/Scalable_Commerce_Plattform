@@ -8,6 +8,7 @@ import com.jonaskv.ecommerce.user_service.dto.request.CreateProfileRequest;
 import com.jonaskv.ecommerce.user_service.dto.request.UserProfileRequest;
 import com.jonaskv.ecommerce.user_service.dto.response.AddressResponse;
 import com.jonaskv.ecommerce.user_service.dto.response.UserProfileResponse;
+import com.jonaskv.ecommerce.user_service.dto.response.UserSummary;
 import com.jonaskv.ecommerce.user_service.service.UserProfileService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,13 +27,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 @RestController
-@RequestMapping ("/api/user-profile")
+@RequestMapping ("/api/users")
 @RequiredArgsConstructor
 public class UserProfileController {
 
   private final UserProfileService userProfileService;
 
-  //Leeres Objekt erstellen
+  //Get empty Object
   @PostMapping
   public ResponseEntity<Void> createProfile(
       @RequestBody CreateProfileRequest request
@@ -41,8 +42,8 @@ public class UserProfileController {
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
-  //UserProfil zurückgeben
-  @GetMapping("/me/{userId}")
+  //Get UserProfile
+  @GetMapping("/me")
   public ResponseEntity<UserProfileResponse> getMyProfile(
       @RequestHeader("X-User-Id") Long userId
   ){
@@ -58,7 +59,7 @@ public class UserProfileController {
     return ResponseEntity.ok(userProfileService.updateProfile(userId, userProfileRequest));
   }
   
-  //Alle Adressen abrufen
+  //Get all addresses
   @GetMapping ("/me/addresses")
   public ResponseEntity<List<AddressResponse>> getAddresses(
       @RequestHeader ("X-User-Id") Long userId
@@ -66,8 +67,8 @@ public class UserProfileController {
     return ResponseEntity.ok(userProfileService.getAddresses(userId));
   }
 
-  //Adresse hinzufügen
-  @PostMapping("/addresses")
+  //Add an address
+  @PostMapping("/me/addresses")
   public ResponseEntity<AddressResponse> addAddress(
       @RequestHeader("X-User-Id") Long userId,
       @RequestBody AddressRequest addressRequest
@@ -76,7 +77,8 @@ public class UserProfileController {
         .body(userProfileService.addAddress(addressRequest, userId));
   }
 
-  @DeleteMapping("me/addresses/{addressId}")
+  //Delete a address
+  @DeleteMapping("/me/addresses/{addressId}")
   public ResponseEntity<Void> deleteAddress(
       @RequestHeader("X-User-Id") Long userId,
       @PathVariable Long addressId
@@ -85,12 +87,23 @@ public class UserProfileController {
     return ResponseEntity.noContent().build();
   }
 
-  @PatchMapping("me/addresses/{addressId}/default")
-  public ResponseEntity<AddressResponse> setDefaultAddress(
-    @RequestHeader("X-User-Id") Long userId,
-    @PathVariable Long addressId
+  //Patch an address
+  @PatchMapping("/me/addresses/{addressId}/default")
+  public ResponseEntity<Void> setDefaultAddress(
+      @RequestHeader("X-User-Id") Long userId,
+      @PathVariable Long addressId
   ){
-    return ResponseEntity.ok(userProfileService.setDefaultAddress(userId, addressId));
+    userProfileService.setDefaultAddress(userId, addressId);
+    return ResponseEntity.status(HttpStatus.CREATED).build();
   }
+
+  //Get userSummary for another services
+  @GetMapping("/users/{id}")
+  public ResponseEntity<UserSummary> getUserById(
+      @PathVariable Long id
+  ){
+    return ResponseEntity.ok(userProfileService.getUserById(id));
+  }
+
 
 }

@@ -8,15 +8,17 @@ import com.jonaskv.ecommerce.user_service.dto.request.AddressRequest;
 import com.jonaskv.ecommerce.user_service.dto.request.UserProfileRequest;
 import com.jonaskv.ecommerce.user_service.dto.response.AddressResponse;
 import com.jonaskv.ecommerce.user_service.dto.response.UserProfileResponse;
+import com.jonaskv.ecommerce.user_service.dto.response.UserSummary;
 import com.jonaskv.ecommerce.user_service.entity.Address;
 import com.jonaskv.ecommerce.user_service.entity.UserProfile;
+import com.jonaskv.ecommerce.user_service.exception.AddressNotFoundException;
+import com.jonaskv.ecommerce.user_service.exception.UnauthorizedAddressAccessException;
+import com.jonaskv.ecommerce.user_service.exception.UserNotFoundException;
 import com.jonaskv.ecommerce.user_service.repository.AddressRepository;
 import com.jonaskv.ecommerce.user_service.repository.UserProfileRepository;
 
 import lombok.RequiredArgsConstructor;
 
-
-//TODO: Eigene Exceptions schreiben e.g UserNotFound
 @Service
 @RequiredArgsConstructor
 public class UserProfileService {
@@ -25,19 +27,20 @@ public class UserProfileService {
   private final AddressRepository addressRepository;
 
   public void createProfile(Long userId) {
-      UserProfile userProfile =  UserProfile.builder()
-            .id(userId)
-            .build();
-      userProfileRepository.save(userProfile);   
+    if(userProfileRepository.existsById(userId)) return;
+    UserProfile userProfile =  UserProfile.builder()
+        .id(userId)
+        .build();
+    userProfileRepository.save(userProfile);   
   }
 
   public UserProfileResponse getProfile(Long userId) {
-      UserProfile user= userProfileRepository.findById(userId).orElseThrow(() -> new IllegalStateException(""));
-      return userProfileResponseBuilder(user);
+    UserProfile user= userProfileRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+    return userProfileResponseBuilder(user);
   }
 
   public UserProfileResponse updateProfile(Long userId, UserProfileRequest request) {
-    UserProfile user = userProfileRepository.findById(userId).orElseThrow(() -> new IllegalStateException());
+    UserProfile user = userProfileRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
     user.updateProfil(
         request.getFirstName(),
         request.getLastName(),
@@ -48,12 +51,12 @@ public class UserProfileService {
   }
 
   public List<AddressResponse> getAddresses(Long userId) {
-    UserProfile user = userProfileRepository.findById(userId).orElseThrow(() -> new IllegalStateException());
-    return getAddresses(user);
+    UserProfile user = userProfileRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+    return mapAddressesToResponse(user);
   }
 
   public AddressResponse addAddress(AddressRequest request, Long userId) {
-    UserProfile user = userProfileRepository.findById(userId).orElseThrow(() -> new IllegalStateException());
+    UserProfile user = userProfileRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
     Address address = Address.builder()
         .city(request.getCity())
         .postalCode(request.getPostalCode())
@@ -63,44 +66,53 @@ public class UserProfileService {
         .build();
 
     user.addAddress(address);
-
     userProfileRepository.save(user);
-
     return getAddressResponse(address);
   }
 
   public void deleteAddress(Long userId, Long addressId) {
-    UserProfile user = userProfileRepository.findById(userId).orElseThrow(() -> new IllegalStateException());
-    Address address  = addressRepository.findById(addressId).orElseThrow(() -> new IllegalStateException());
+    UserProfile user = userProfileRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+    Address address  = addressRepository.findById(addressId).orElseThrow(() -> new AddressNotFoundException(addressId));
+    if(!address.getUser().getId().equals(userId)) {
+      throw new UnauthorizedAddressAccessException();
+    }
     user.removeAddress(address);
     userProfileRepository.save(user);
   }
 
-  public AddressResponse setDefaultAddress(Long userId, Long addressId) {
+  //TODO morgen nochmal anschauen
+  public void setDefaultAddress(Long userId, Long addressId) {
     UserProfile user = userProfileRepository.findById(userId).orElseThrow(() -> new IllegalStateException());
     Address address  = addressRepository.findById(addressId).orElseThrow(() -> new IllegalStateException());
     user.setAddressToDefault(address);
-
-    return getAddressResponse(address);
+    userProfileRepository.save(user);
   }
 
-
+  public UserSummary getUserById(Long userId) {
+    UserProfile user = userProfileRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+    return UserSummary.builder()
+        .id(user.getId())
+        .firstName(user.getFirstName())
+        .lastName(user.getLastName())
+        .build();
+  }
   
   //returns a userProfileResponse object
   private UserProfileResponse userProfileResponseBuilder(UserProfile user) {
     return UserProfileResponse.builder()
+        .id(user.getId())
         .firstName(user.getFirstName())
         .lastName(user.getLastName())
         .phoneNumber(user.getPhoneNumber())
         .profilImageUrl(user.getProfilImageUrl())
-        .addressesList(getAddresses(user))
+        .addressesList(mapAddressesToResponse(user))
         .createdAt(user.getCreatedAt())
         .updatedAt(user.getUpdatedAt())
         .build();
   }
 
   //returns every address from a userProfile
-  private List<AddressResponse> getAddresses (UserProfile user) {
+  private List<AddressResponse> mapAddressesToResponse(UserProfile user) {
     return user.getAddresses()
         .stream()
         .map(address -> AddressResponse.builder()
