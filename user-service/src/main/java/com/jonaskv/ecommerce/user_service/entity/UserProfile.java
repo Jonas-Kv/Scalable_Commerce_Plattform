@@ -74,15 +74,8 @@ public class UserProfile {
     address.assingToUser(null);
   }
 
-  public void setAddressToDefault(Address addressToDefault){
-    for(Address address: addresses) {
-      if(address.equals(addressToDefault)) {
-        address.setIsDefault(true);
-      }
-      else {
-        address.setIsDefault(false);
-      }
-    }
+  public void setAddressToDefault(Long addressId) {
+    addresses.forEach(a -> a.setIsDefault(a.getId().equals(addressId)));
   }
 
 }

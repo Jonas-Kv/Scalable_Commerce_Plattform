@@ -31,7 +31,7 @@ public class UserProfileService {
     UserProfile userProfile =  UserProfile.builder()
         .id(userId)
         .build();
-    userProfileRepository.save(userProfile);   
+    userProfileRepository.save(userProfile);
   }
 
   public UserProfileResponse getProfile(Long userId) {
@@ -57,6 +57,9 @@ public class UserProfileService {
 
   public AddressResponse addAddress(AddressRequest request, Long userId) {
     UserProfile user = userProfileRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+    if(Boolean.TRUE.equals(request.getIsDefault())) {
+      user.getAddresses().forEach(a -> a.setIsDefault(false));
+    }
     Address address = Address.builder()
         .city(request.getCity())
         .postalCode(request.getPostalCode())
@@ -66,8 +69,10 @@ public class UserProfileService {
         .build();
 
     user.addAddress(address);
-    userProfileRepository.save(user);
-    return getAddressResponse(address);
+    UserProfile savedUser = userProfileRepository.save(user);
+    Address savedAddress = savedUser.getAddresses().get(savedUser.getAddresses().size()-1);
+
+    return getAddressResponse(savedAddress);
   }
 
   public void deleteAddress(Long userId, Long addressId) {
@@ -83,8 +88,10 @@ public class UserProfileService {
   //TODO morgen nochmal anschauen
   public void setDefaultAddress(Long userId, Long addressId) {
     UserProfile user = userProfileRepository.findById(userId).orElseThrow(() -> new IllegalStateException());
-    Address address  = addressRepository.findById(addressId).orElseThrow(() -> new IllegalStateException());
-    user.setAddressToDefault(address);
+    if(!addressRepository.existsById(addressId)) {
+      throw new AddressNotFoundException(addressId);
+    }
+    user.setAddressToDefault(addressId);
     userProfileRepository.save(user);
   }
 
@@ -116,6 +123,7 @@ public class UserProfileService {
     return user.getAddresses()
         .stream()
         .map(address -> AddressResponse.builder()
+        .id(address.getId())
         .street(address.getStreet())
         .city(address.getCity())
         .postalCode(address.getPostalCode())

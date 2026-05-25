@@ -98,12 +98,10 @@ public class UserProfileController {
   }
 
   //Get userSummary for another services
-  @GetMapping("/users/{id}")
+  @GetMapping("/me/summary")
   public ResponseEntity<UserSummary> getUserById(
-      @PathVariable Long id
+      @RequestHeader("X-User-Id") Long userId
   ){
-    return ResponseEntity.ok(userProfileService.getUserById(id));
+    return ResponseEntity.ok(userProfileService.getUserById(userId));
   }
-
-
 }

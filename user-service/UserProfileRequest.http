@@ -1,0 +1,53 @@
+###UserProfile
+
+#Create empty UserProfileObject
+POST http://localhost:8082/api/users
+Content-Type: application/json
+
+{
+  "userId" : 2
+}
+
+###Get UserProfile Object
+GET http://localhost:8082/api/users/me
+X-User-Id: 1
+
+### PUT UserProfile 
+PUT http://localhost:8082/api/users/me
+X-User-Id: 2
+Content-Type: application/json
+
+{
+  "firstName": "Max",
+  "lastName": "Mustermann",
+  "phoneNumber": "+49123456789"
+}
+
+### GET addresses
+GET http://localhost:8082/api/users/me/addresses
+X-User-Id: 1
+
+###Add address
+POST http://localhost:8082/api/users/me/addresses
+X-User-Id: 1
+Content-Type: application/json
+
+{
+  "street" : "patrick.street.1",
+  "city" : "Lage",
+  "postalCode" : "123456",
+  "country" : "germany",
+  "isDefault" : true
+}
+
+###Delete a address
+DELETE http://localhost:8082/api/users/me/addresses/52
+X-User-Id: 1
+
+###Set address to default
+PATCH http://localhost:8082/api/users/me/addresses/2/default
+X-User-Id: 1
+
+###Get summary
+GET http://localhost:8082/api/users/me/summary
+X-User-Id: 1

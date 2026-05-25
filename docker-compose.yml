@@ -31,12 +31,16 @@ services:
     env_file: ./user-service/user.env
     networks:
       - ecommerce-net
+    ports:
+      - "5433:5432"
 
   user-service:
     build: ./user-service
     depends_on:
       - db-user
     env_file: ./user-service/user.env
+    ports:
+      - "8082:8082"
     networks:
       - ecommerce-net
 
