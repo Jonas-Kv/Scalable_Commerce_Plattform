@@ -3,6 +3,7 @@ package com.jonaskv.ecommerce.user_service.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.jonaskv.ecommerce.user_service.dto.request.AddressRequest;
 import com.jonaskv.ecommerce.user_service.dto.request.UserProfileRequest;
@@ -25,6 +26,7 @@ public class UserProfileService {
   
   private final UserProfileRepository userProfileRepository;
   private final AddressRepository addressRepository;
+  private final MinioService minioService;
 
   public void createProfile(Long userId) {
     if(userProfileRepository.existsById(userId)) return;
@@ -93,6 +95,18 @@ public class UserProfileService {
     }
     user.setAddressToDefault(addressId);
     userProfileRepository.save(user);
+  }
+
+  public String updateProfileImage(Long userId, MultipartFile image) throws Exception{
+    UserProfile user = userProfileRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+    if (user.getProfilImageUrl()!=null) {
+      minioService.deleteImage(user.getProfilImageUrl());
+    }
+    //returns a URL
+    String imageUrl = minioService.uploadImage(image);
+    user.updateProfileImage(imageUrl);
+    userProfileRepository.save(user);
+    return imageUrl;
   }
 
   public UserSummary getUserById(Long userId) {

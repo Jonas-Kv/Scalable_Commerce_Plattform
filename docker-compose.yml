@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # API Gateway (Einzig offener Port)
+  # API Gateway (Einzig offener Port, in der Produktion)
   api-gateway:
     build: ./api-gateway
     container_name: api-gateway
@@ -28,19 +28,19 @@ services:
   # User Service
   db-user:
     image: postgres:15
-    env_file: ./user-service/user.env
+    env_file: 
+      - ./user-service/user.env
     networks:
       - ecommerce-net
-    ports:
-      - "5433:5432"
 
   user-service:
     build: ./user-service
     depends_on:
       - db-user
-    env_file: ./user-service/user.env
-    ports:
-      - "8082:8082"
+      - minio
+    env_file: 
+      - ./user-service/user.env
+      - ./minio.env
     networks:
       - ecommerce-net
 
@@ -118,6 +118,19 @@ services:
     env_file: ./notification-service/notification.env
     networks:
       - ecommerce-net
+
+  minio:
+    image: minio/minio
+    container_name: minio
+    command: server /data --console-address ":9001"
+    env_file: ./minio.env
+    volumes:
+      - minio_data:/data
+    networks:
+      - ecommerce-net
+
+volumes:
+  minio_data:
 
 networks:
   ecommerce-net:

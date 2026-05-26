@@ -1,0 +1,63 @@
+version: '3.8'
+#Fürs testen, wird in der Produktion gelöscht
+services:
+  auth-service:
+    ports:
+      - "8081:8081"
+
+  user-service:
+    ports:
+      - "8082:8082"
+
+  product-service:
+    ports:
+      - "8083:8083"
+
+  order-service:
+    ports:
+      - "8084:8084"
+
+  payment-service:
+    ports:
+      - "8085:8085"
+
+  notification-service:
+    ports:
+      - "8086:8086"
+
+  chat-service:
+    ports:
+      - "8087:8087"
+
+  minio:
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+
+  db-auth:
+    ports:
+      - "5433:5432"
+
+  db-user:
+    ports:
+      - "5434:5432"
+
+  db-product:
+    ports:
+      - "5435:5432"
+
+  db-order:
+    ports:
+      - "5436:5432"
+
+  db-payment:
+    ports:
+      - "5437:5432"
+
+  db-chat:
+    ports:
+      - "5438:5432"
+
+  db-notification:
+    ports:
+      - "5439:5432"
