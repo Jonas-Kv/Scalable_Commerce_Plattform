@@ -57,7 +57,7 @@ public class User implements UserDetails{
   private LocalDateTime createdAt;
 
 
-  @Override
+  @Override //Returns the role/rights 
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
   }
@@ -72,22 +72,12 @@ public class User implements UserDetails{
     return email;
   }
 
-  @Override
-  public boolean isAccountNonExpired() {
-    return true;
-  }
-
-  @Override 
+  @Override //Returns if the user acc is active
   public boolean isAccountNonLocked() { 
     return isActive; 
   }
-  
-  @Override 
-  public boolean isCredentialsNonExpired() { 
-    return true; 
-  }
     
-  @Override 
+  @Override //is the acc activated
   public boolean isEnabled() {
     return isActive;
   }
