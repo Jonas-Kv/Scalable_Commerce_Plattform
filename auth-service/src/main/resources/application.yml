@@ -18,6 +18,14 @@ spring:
       hibernate:
         format_sql: true
 
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: 86400000
+
+services:
+  user-service:
+    url: ${USER_SERVICE_URL}
+
 logging:
   level:
     org.hibernate.SQL: DEBUG

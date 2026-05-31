@@ -46,7 +46,6 @@ public class User implements UserDetails{
   @Column(nullable = false)
   private Role role;
 
-
   @Setter
   private Boolean isActive = true;
 
@@ -55,7 +54,6 @@ public class User implements UserDetails{
 
   @CreationTimestamp
   private LocalDateTime createdAt;
-
 
   @Override //Returns the role/rights 
   public Collection<? extends GrantedAuthority> getAuthorities() {
