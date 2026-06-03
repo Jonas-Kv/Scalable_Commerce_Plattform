@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
 
 spring:
   datasource:
@@ -20,11 +20,11 @@ spring:
 
 jwt:
   secret: ${JWT_SECRET}
-  expiration: 86400000
+  expiration: ${JWT_EXPIRATION}
 
 services:
   user-service:
-    url: ${USER_SERVICE_URL}
+    url: ${USER_SERVICE_URL:http://user-service:8082}
 
 logging:
   level:

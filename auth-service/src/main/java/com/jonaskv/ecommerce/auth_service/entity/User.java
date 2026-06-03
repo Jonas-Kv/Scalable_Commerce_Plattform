@@ -47,6 +47,7 @@ public class User implements UserDetails{
   private Role role;
 
   @Setter
+  @Builder.Default
   private Boolean isActive = true;
 
   @Setter

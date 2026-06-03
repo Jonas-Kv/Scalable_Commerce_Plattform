@@ -14,7 +14,7 @@ X-User-Id: 1
 
 ### PUT UserProfile 
 PUT http://localhost:8082/api/users/me
-X-User-Id: 1
+X-User-Id: 42
 Content-Type: application/json
 
 {
@@ -25,11 +25,11 @@ Content-Type: application/json
 
 ### GET addresses
 GET http://localhost:8082/api/users/me/addresses
-X-User-Id: 2
+X-User-Id: 42
 
 ###Add address
 POST http://localhost:8082/api/users/me/addresses
-X-User-Id: 1
+X-User-Id: 42
 Content-Type: application/json
 
 {
@@ -63,3 +63,26 @@ Content-Type: image/jpeg
 
 < C:/Users/dein-name/Pictures/test.jpg
 --boundary--
+
+### Auth-Service
+###Register
+POST http://localhost:8081/api/auth/register
+Content-Type: application/json
+
+{
+  "email" : "jond5567sfdsalf@gmail.com",
+  "password" : "password123"
+}
+
+###Login
+POST http://localhost:8081/api/auth/login
+Content-Type: application/json
+
+{
+  "email" : "jonfas@gmail.com",
+  "password" : "password123"
+}
+
+###Test
+GET http://localhost:8081/api/test
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJqb25mYXNAZ21haWwuY29tIiwidXNlcklkIjozNiwicm9sZSI6IkNVU1RPTUVSIiwiaWF0IjoxNzgwNDI3OTM2LCJleHAiOjE3ODA1MTQzMzZ9.Xk-6lvVDn5CiwyxNlOpqe0aIt2HK9Wadt1dlDh8gBaF7bwFzhHtdMrFMfmXB4pCQ
