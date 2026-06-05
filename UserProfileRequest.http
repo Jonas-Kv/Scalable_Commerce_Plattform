@@ -83,6 +83,44 @@ Content-Type: application/json
   "password" : "password123"
 }
 
-###Test
-GET http://localhost:8081/api/test
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJqb25mYXNAZ21haWwuY29tIiwidXNlcklkIjozNiwicm9sZSI6IkNVU1RPTUVSIiwiaWF0IjoxNzgwNDI3OTM2LCJleHAiOjE3ODA1MTQzMzZ9.Xk-6lvVDn5CiwyxNlOpqe0aIt2HK9Wadt1dlDh8gBaF7bwFzhHtdMrFMfmXB4pCQ
+###Product Service
+#Create new category
+POST http://localhost:8083/api/category
+Content-Type: application/json
+
+{
+  "name" : "marlon´s Freizeit Spielsachen",
+  "description" : "Hier sind alle Spielsachen von Marvin gelistet"
+}
+
+###Create new Product
+POST http://localhost:8083/api/product
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="name"
+
+Test Laptop
+--boundary
+Content-Disposition: form-data; name="description"
+
+Ein sehr gutes Laptop
+--boundary
+Content-Disposition: form-data; name="price"
+
+999.99
+--boundary
+Content-Disposition: form-data; name="stock"
+
+2
+--boundary
+Content-Disposition: form-data; name="categoryId"
+
+1
+--boundary
+Content-Disposition: form-data; name="image"; filename="test.jpg"
+Content-Type: image/jpeg
+
+< /path/to/your/image.jpg
+--boundary--
+

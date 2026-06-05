@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class UserProfileRequest {
   
-  public String firstName;
-  public String lastName;
-  public String phoneNumber;
+  private String firstName;
+  private String lastName;
+  private String phoneNumber;
 }

@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserProfile {
 
-  @Id //TODO: machen das Id von auth generiert wird
+  @Id
   private Long id;
 
   @Column

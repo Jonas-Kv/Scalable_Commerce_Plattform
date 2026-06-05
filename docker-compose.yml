@@ -55,7 +55,9 @@ services:
     build: ./product-service
     depends_on:
       - db-product
-    env_file: ./product-service/product.env
+    env_file: 
+      - ./product-service/product.env
+      - ./minio.env
     networks:
       - ecommerce-net
 
